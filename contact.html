@@ -584,7 +584,7 @@
 
     var map = L.map(mapElement).setView([latitude, longitude], 14);
 
-    L.tileLayer('../../../%7bs%7d.tiles.wmflabs.org/bw-mapnik/%7bz%7d/%7bx%7d/%7by%7d.png', {
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
