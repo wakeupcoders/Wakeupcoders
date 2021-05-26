@@ -582,9 +582,9 @@
     var markerImage = "assets/img/map-marker.png";
     var mapElement = "map-contact";
 
-    var map = L.map(mapElement).setView([latitude, longitude], 14);
+    var map = L.map(mapElement).setView([latitude, longitude], 11);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
