@@ -577,14 +577,14 @@
 <script src="assets/js/custom.js"></script>
 
 <script>
-     var latitude = 34.038405;
+    var latitude = 34.038405;
     var longitude = -117.946944;
     var markerImage = "assets/img/map-marker.png";
     var mapElement = "map-contact";
 
     var map = L.map(mapElement).setView([latitude, longitude], 14);
 
-    L.tileLayer('https://tiles.wmflabs.org/bw-mapnik/{zoom}/{x}/{y}.png', {
+    L.tileLayer('https://tiles.wmflabs.org/bw-mapnik/${z}/${x}/${y}.png', {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
