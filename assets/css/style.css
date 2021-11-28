@@ -2575,11 +2575,12 @@ body.has-loading-screen.loading-done #brand-navigation {
     background-color: #000;
     left: 0;
     width: 100%;
+    
 }
 
 @media (max-width: 35.9375rem) {
     #brand-navigation {
-        height: 4.5rem;
+        height: 7.9rem;
     }
 }
 
