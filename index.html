@@ -1081,12 +1081,11 @@
         var forms = document.getElementById('newsletter-form');
         if (forms.checkValidity()) {
 
-            alert(forms.checkValidity())
+            
             var status = document.getElementById("newsletter-status");
             var data = new FormData(event.target);
             var SmtButton = document.getElementById("newsletter-button");
-            console.log(data);
-            console.log(event);
+           
             
             
             SmtButton.innerHTML="Loading ...";
