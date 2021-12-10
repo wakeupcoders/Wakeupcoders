@@ -934,21 +934,25 @@
                                 <p>And stay informed about our news and events</p>
                             </div>
                             <div class="newsletter-element">
-
-                                <form>
+                            
+                                <form id="newsletter-form" action="https://formspree.io/f/mknynjlw" method="POST"> 
                                     <div class="form-group">
 
-                                        <input type="email" class="form-control" id="exampleInputEmail1"
-                                            aria-describedby="emailHelp" placeholder="Enter email">
+                                        <input type="email" class="form-control" id="NewsletterInputEmail"
+                                            placeholder="Enter email" required name="Newsletter_Subscriber" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
                                         <small id="emailHelp" class="form-text text-muted">We'll never share your email
                                             with anyone else.</small>
                                     </div>
 
 
-                                    
-                                    <button type="submit" class="btn  btn-outline-light btn-block btn-sm">Submit</button>
+                                    <!-- " -->
+                                    <button type="submit" class="btn  btn-outline-light btn-block btn-sm" id="newsletter-button">Submit 
+                                        </button>
                                 </form>
-                                <br><br><br><br>
+                                
+                                <br>
+                                <h5 style="color:white;" id="newsletter-status"></h2>
+                                <br><br><br>
                             </div>
                         </div>
 
@@ -1066,6 +1070,53 @@
         })
 
     </script>
+
+
+<script>
+    var form = document.getElementById("newsletter-form");
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+       
+        var forms = document.getElementById('newsletter-form');
+        if (forms.checkValidity()) {
+
+            alert(forms.checkValidity())
+            var status = document.getElementById("newsletter-status");
+            var data = new FormData(event.target);
+            var SmtButton = document.getElementById("newsletter-button");
+            console.log(data);
+            console.log(event);
+            
+            
+            SmtButton.innerHTML="Loading ...";
+
+          
+            fetch(event.target.action, {
+                method: form.method,
+                body: data,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                status.innerHTML = "You have successlly subscribed the newsletter!!";
+               
+
+                SmtButton.innerHTML="Submit";
+                form.reset()
+            }).catch(error => {
+                console.log(error);
+                status.innerHTML = "Oops! There was a problem submitting your form, Please try again."
+                SmtButton.innerHTML="Submit";
+            });
+
+        }
+
+
+
+    }
+    form.addEventListener("submit", handleSubmit)
+</script>
 
 </body>
 
