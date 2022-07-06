@@ -1596,7 +1596,7 @@ blockquote h2 {
     padding: 1.2rem 2.5rem;
     position: relative;
     outline: none !important;
-    text-decoration: underline;
+    
     text-transform: uppercase;
 }
 
