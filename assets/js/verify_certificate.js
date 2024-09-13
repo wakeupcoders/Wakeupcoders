@@ -11,6 +11,25 @@ function checkIfJsonFileExists(filePath) {
  return xhr.status === 200;
 }
 
+function celeberate(){
+    // trigger confetti
+    confetti({
+      particleCount: 500,
+      spread: 120,
+      origin: { y: 0.6 }
+  });
+
+  // button animation
+  celebrateBtn.style.transform = 'scale(0.95)';
+  setTimeout(() => {
+      celebrateBtn.style.transform = 'scale(1)';
+  }, 100);
+
+
+}
+
+
+
 if (checkIfJsonFileExists(certificate)) {
  fetch(certificate)
   .then(response => response.text())
@@ -32,6 +51,13 @@ if (checkIfJsonFileExists(certificate)) {
   });
 
 
+setTimeout(() => {
+    celeberate();
+}, 1000);
+
+setTimeout(() => {
+    celeberate();
+}, 3000);
 
 
  console.log(`The JSON file ${certificate} exists.`);
