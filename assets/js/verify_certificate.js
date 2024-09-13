@@ -50,7 +50,6 @@ if (checkIfJsonFileExists(certificate)) {
    document.getElementById('verifyLink').innerHTML = `wakeupcoders.com/verify?cert=${paramValue}`;
   });
 
-
 setTimeout(() => {
     celeberate();
 }, 1000);

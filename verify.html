@@ -14,11 +14,22 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </head>
 
-<body onload="">
+<body>
+
+   
+    <audio id="soundLogo">
+        <source src="./assets/sound_logo/wakeupcoderssoundlogo.mp3" type="audio/mp3">
+    </audio>
     
     <script>
-       
+        function test() {
+            var x = document.getElementById("soundLogo");
+            x.play();
+        }
+    
+        window.onload = test;
     </script>
+
     <!-- Invalid Certificate -->
     <div id="invalid">
         No Valid Certificate Found!! Please contact Admin : Wakeupcoders.com/contact
@@ -30,7 +41,8 @@
                 <div class="content">
                     <img id="mt-logo" src="https://i.pinimg.com/736x/65/64/37/656437e8937ce48c9bf273c305a43736.jpg"
                         alt="Logo Goes Here" style="height: 100px; width: 100px;" />
-                    <p id="mt-logo" style="margin-top: 89px;margin-right: -128px;font-size: 11px;">Think Beyond Everything</p>
+                    <p id="mt-logo" style="margin-top: 89px;margin-right: -128px;font-size: 11px;">Think Beyond
+                        Everything</p>
 
                     <img id="mt-stamp-sign" src="./assets/img/signn.png" alt="Certified Stamp"
                         style="height: 78px; width: 206px; margin-top: 36px; " />
