@@ -11,9 +11,31 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="./assets/css/verify_certificate.css">
     <script src="./assets/js/verify_certificate.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </head>
 
-<body>
+<body onload="celeberate()">
+    
+    <script>
+        function celeberate(){
+              // trigger confetti
+              confetti({
+                particleCount: 500,
+                spread: 120,
+                origin: { y: 0.6 }
+            });
+        
+            // button animation
+            celebrateBtn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                celebrateBtn.style.transform = 'scale(1)';
+            }, 100);
+
+
+        }
+
+       
+    </script>
     <!-- Invalid Certificate -->
     <div id="invalid">
         No Valid Certificate Found!! Please contact Admin : Wakeupcoders.com/contact
