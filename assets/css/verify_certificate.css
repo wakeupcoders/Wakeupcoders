@@ -1,0 +1,145 @@
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;1,400&display=swap');
+
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+ font-family: 'Montserrat', sans-serif;
+}
+
+a {
+ color: #6f6f6f;
+ text-decoration: none;
+}
+
+
+address {
+  font-weight: 100;
+  font-size: 14pt;
+  font-style: normal;
+  line-height: 135%;
+}
+
+h2,
+h3 {
+ font-weight: 300  
+}
+
+ul {
+ color: #58595B;
+ text-decoration: none;
+ list-style-type: none;
+ font-size: 9pt;
+ font-weight: 300;
+ text-align: right
+}
+
+.cert-container {
+ position: relative;
+ padding: 45px;
+ border: 1px solid #6f6f6f;
+ width: 1056px;
+ height: 816px;
+ background-image: url(images/mt_icon_grayscale.jpg);
+ background-repeat: no-repeat;
+ background-size: cover;
+ margin: auto;
+}
+
+/* Certificate Outer Border (Gray) */
+.border-gray {
+ padding: 5px;
+ border: 3px solid #58595B;
+}
+
+/* Certificate Inner Border (red) */
+.border-red {
+ border: 3px double #CE202F;
+}
+
+.content {
+ padding: 20px;
+ height: 700px;
+ text-align: center;
+}
+
+/* Certificate, Host Server, and LMS IDs */
+.credentials {
+ position: absolute;
+ right: 100px;
+ top: 120px; 
+}
+
+.copytext-container{
+ position: absolute;
+ left: 190px;
+ top: 275px; 
+ text-align: left;
+ line-height: 100%;
+}
+
+.congrats-copytext {
+  margin-bottom: 70px;
+}
+
+.course-copytext {
+  margin-bottom: 65px;
+}
+
+.address-copytext {
+  line-height: 150%;
+}
+
+#mt-logo {
+ position: absolute;
+ width:350px;
+ right: 777px;
+ top: 91px;
+}
+
+#mt-stamp {
+ position: absolute;
+ width:144px;
+ right: 130px;
+ top: 550px;
+}
+
+#mt-stamp-sign {
+ position: absolute;
+ width:144px;
+ right: 85px;
+ top: 550px;
+}
+
+#mt-site {
+ color: #CE202F;
+ font-size: 14pt;
+  
+}
+#user-id-string {
+  line-height: 7px;
+}
+
+#course-id-string {
+  line-height: 7px;
+}
+
+@media print {
+ @page {
+  size: letter landscape;
+  margin: 0;
+  padding: 0;
+ }
+  
+   .cert-container {
+  border: none;
+}
+
+/* 
+ background-image {
+  image-resolution: 300dpi;
+  }
+*/
+} 

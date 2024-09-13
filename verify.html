@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Certificate</title>
+ <br>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ <link rel="stylesheet" href="./assets/css/verify_certificate.css">
+ <script src="./assets/js/verify_certificate.js"></script>
+</head>
+<body>
+<!-- Invalid Certificate -->
+ <div id="invalid">
+  No Valid Certificate Found!! Please contact Admin : Wakeupcoders.com/contact
+ </div>
+ <!-- If certificate is valid -->
+ <div class="cert-container" style="display: none;">
+  <div class="border-gray">
+   <div class="border-red">
+    <div class="content">
+     <img id="mt-logo" src="https://i.pinimg.com/736x/65/64/37/656437e8937ce48c9bf273c305a43736.jpg"
+      alt="Logo Goes Here" style="height: 100px; width: 100px;" />
+      
+     <img id="mt-stamp-sign" src="./signature.png"
+      alt="Certified Stamp" style="height: 110px; width: 275px; margin-top: 13px; " />
+      
+     <h3 id="mt-stamp" style="margin-top: 76px;"><b>Signature</b></h3>
+
+     <ul class="credentials">
+      <li>
+       <p id="cert-id">Certificate Id: <span>{{certification_id}}</span></p>
+      </li>
+      <li>
+       <p id="host-server-id">Hosting Server Id: <span>{{Server_id}}</span></p>
+      </li>
+      <li>
+       <p id="lms-id">Learning Management System Id: <span>{{lms_id}}</span></p>
+       <br>
+       <hr>
+      </li>
+      <li>
+       <div id="qrcode" style="float:right; margin-top: 20px;"></div>
+       <script>
+       const urlParams1 = new URLSearchParams(window.location.search);
+       const paramValue1 = urlParams.get('cert');
+       const qrcode = new QRCode(document.getElementById("qrcode"), {
+         text: "wakeupcoders.com/verify?cert="+paramValue1, // Replace with your desired text or URL
+         width: 160,
+         height: 160,
+         colorDark: "#000000",
+         colorLight: "#ffffff",
+         correctLevel: QRCode.CorrectLevel.H
+        });</script>
+      </li>
+
+     </ul>
+     <div class="copytext-container">
+      <div class="congrats-copytext">
+       <h1>Certificate of Completion</h1><br>
+       <h2>Congratulations <span>{{First Name}}</span><span> {{Last Name}}</span></h2><br>
+       <h3 id="user-id-string">User Id: <span>{{user_id}}</span></h3>
+      </div>
+
+      <div class="course-copytext">
+       <h1><span>{{Course Title}}</span></h1><br>
+       <h2>Course Completed on: <span id="certification_date">{{certification_date}}</span></h2><br>
+       <h3 id="course-id-string">Course Id: <span id="course_id">{{course_id}}</span></h3>
+
+      </div>
+      <div class="address-copytext">
+       <address>Wakeupcoders <br> Digha Gaon, Airoli Naka <br> Navi Mumbai, Maharashtra 400708</address>
+       <a href="#" id="mt-site"><em>Wakeupcoders.com</em></a>
+
+       <hr style="width: 300px;">
+       <b style="font-size: 10px;" id="verifyLink">wakeupcoders.com/verify?cert=CCKUJL96EK</b>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+ </div>
+</body>
+</html>
