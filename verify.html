@@ -17,17 +17,15 @@
 <body>
 
    
-    <audio id="soundLogo">
-        <source src="./assets/sound_logo/wakeupcoderssoundlogo.mp3" type="audio/mp3">
+    <audio id="soundLogo" autoplay="true">
+        <source src="./assets/sound_logo/wakeupcoderssoundlogo.ogg" type="audio/ogg">
     </audio>
     
     <script>
-        function test() {
-            var x = document.getElementById("soundLogo");
-            x.play();
-        }
-    
-        window.onload = test;
+        var audio = document.getElementById("soundLogo");
+        setTimeout(function() {
+            audio.play();
+        }, 1000); // unmute after 1 second
     </script>
 
     <!-- Invalid Certificate -->

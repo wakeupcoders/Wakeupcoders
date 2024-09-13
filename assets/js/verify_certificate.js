@@ -19,12 +19,6 @@ function celeberate(){
       origin: { y: 0.6 }
   });
 
-  // button animation
-  celebrateBtn.style.transform = 'scale(0.95)';
-  setTimeout(() => {
-      celebrateBtn.style.transform = 'scale(1)';
-  }, 100);
-
 
 }
 
@@ -52,6 +46,7 @@ if (checkIfJsonFileExists(certificate)) {
 
 setTimeout(() => {
     celeberate();
+    
 }, 1000);
 
 setTimeout(() => {
