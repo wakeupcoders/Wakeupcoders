@@ -17,8 +17,11 @@
     <link rel="stylesheet" href="assets/css/odometer-theme-default.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/social_links.css">
-    <link rel="stylesheet" href="assets/css/clients.css">
+  
 
+  <!-- some of the clients helped css -->
+  <link rel="stylesheet" href="assets/css/clients.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
 
     <title>Public Speaking - Kabir Narayan Jha</title>
 
@@ -185,7 +188,7 @@
 
                 <div class="ts-background" data-bg-parallax="scroll" data-bg-parallax-speed="3">
                     <div class="ts-background-image ts-img-into-bg ts-parallax-element">
-                        <img src="https://media.istockphoto.com/id/499517325/photo/a-man-speaking-at-a-business-conference.jpg?s=612x612&w=0&k=20&c=gWTTDs_Hl6AEGOunoQ2LsjrcTJkknf9G8BGqsywyEtE="
+                        <img src="https://t4.ftcdn.net/jpg/05/71/83/47/360_F_571834789_ujYbUnH190iUokdDhZq7GXeTBRgqYVwa.jpg"
                             alt="">
                     </div>
                 </div>
@@ -208,7 +211,6 @@
                         <div class="row">
                             <div class="col-md-1"></div>
                             <div class="col-md-10">
-                                
                                 <div class="ts-blog-thumb">
                                     <a href="https://t3.ftcdn.net/jpg/06/01/17/18/360_F_601171862_l7yZ0wujj8o2SowiKTUsfLEEx8KunYNd.jpg"
                                         class="ts-blog-image ts-background">
@@ -230,26 +232,39 @@
 
                                     </p>
 
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <img src="./assets/img/BrandsLogo.png" alt="" height="600" width="700" class="img-responsive">
+                               
+                                    <!--Clients Section
+                                ================================================================================================================
+                                ================================================================================================================
+                                -->
+                        
+                                    <div class="container">
+                                        <h2>SOME OF THE BUSINESSES WE'VE HELPED TO GROW:</h2>
+                                        <div class="brand-carousel section-padding owl-carousel">
+                                            <div class="single-logo">
+                                                <img src="https://www.autonewspress.com/wp-content/uploads/2020/09/capgemini-logo.jpg" alt="">
+                                            </div>
+                                            <div class="single-logo" style="margin-top:20px">
+                                                <img src="https://www.cuchd.in/about/assets/images/cu-logo.png" alt="">
+                                            </div>
+                                            <div class="single-logo">
+                                                <img src="https://1000logos.net/wp-content/uploads/2021/06/HDFC-Bank-logo.png" alt="">
+                                            </div>
+                                            <div class="single-logo">
+                                                <img src="https://thestrawgroup.com/wp-content/uploads/2022/05/FIS-logo-04.webp" alt="">
+                                            </div>
+                                            <div class="single-logo" style="margin-top:20px">
+                                                <img src="https://lh6.googleusercontent.com/proxy/Y6CoKCEpmElDkMIsBmj-5VxJ3ensDgeDzCqmAblyOijiTnAqOMaBvolwsVIXnh1z_dD-zZ4C2ewqUWZTWYli3ORHc0x3XK8x7dSkM2Ew7SU1ls5tz8cIn0J5Liku" alt="">
+                                            </div>
+                                           
+                                           
                                         </div>
-                                        
                                     </div>
-                                    <!-- <footer>
-                                        <a href="#" class="mr-3">
-                                            <i class="fa fa-comment"></i>
-                                            20
-                                        </a>
-                                        <a href="#">
-                                            <i class="fa fa-heart"></i>
-                                            46
-                                        </a>
-                                    </footer> -->
+                        
+                          
                                 </div>
                             </div>
-                            <div class="col-md-1"></div>
-                            <!--end Blog post thumbnail-->
+                         
                         </div>
 
                     </div>
@@ -403,6 +418,27 @@
     <script src="assets/js/owl.carousel.min.js"></script>
     <script src="assets/js/jquery.vide.min.js"></script>
     <script src="assets/js/custom.js"></script>
+    <!-- some of the business we helped js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.js"></script>
+    <script>
+        $('.brand-carousel').owlCarousel({
+            loop: true,
+            margin: 10,
+            autoplay: true,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 3
+                },
+                1000: {
+                    items: 5
+                }
+            }
+        })
+
+    </script>
 
 </body>
 
