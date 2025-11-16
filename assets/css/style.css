@@ -3120,3 +3120,7 @@ h1 a.ts-underline {
         width: 25rem;
     }
 }
+
+.btn-neon-glow{
+    box-shadow: 0 0px 15px #259bff;
+}
