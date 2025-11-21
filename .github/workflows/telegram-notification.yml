@@ -1,6 +1,9 @@
+name: Telegram Notify Pages
+
 on:
-  pages:
-    types: [published]
+  push:
+    branches:
+      - gh-pages  # Change to the branch used for GitHub Pages
 
 jobs:
   notify-telegram:
@@ -13,23 +16,13 @@ jobs:
           REPO: ${{ github.repository }}
           ACTOR: ${{ github.actor }}
           COMMIT: ${{ github.sha }}
-          REPO_OWNER: ${{ github.repository_owner }}
-          REPO_NAME: ${{ github.event.repository.name }}
         run: |
           if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ]; then
             echo "Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID secret"
             exit 1
           fi
-
-          # Build a best-effort Pages URL. For a user/organization site this is typically
-          # https://<owner>.github.io/, for a project site: https://<owner>.github.io/<repo>
-          SITE_URL="https://${REPO_OWNER}.github.io/${REPO_NAME}"
-
-          MESSAGE="📣 GitHub Pages published\nRepository: ${REPO}\nBy: ${ACTOR}\nCommit: ${COMMIT}\nSite: ${SITE_URL}"
-
-          # Send message to Telegram
+          MESSAGE="📢 GitHub Pages updated on $REPO by $ACTOR\nCommit: $COMMIT"
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             -d chat_id="${TELEGRAM_CHAT_ID}" \
             -d text="$MESSAGE" \
-            -d parse_mode="Markdown" \
-            >/dev/null
+            -d parse_mode="Markdown"
