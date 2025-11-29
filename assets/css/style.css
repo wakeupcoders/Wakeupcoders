@@ -1363,8 +1363,8 @@ C. Components
 
 @media (min-width: 75rem) {
     .ts-block {
-        padding-bottom: 9rem;
-        padding-top: 9rem;
+        padding-bottom: 3rem;
+        padding-top: 3rem;
     }
 }
 
