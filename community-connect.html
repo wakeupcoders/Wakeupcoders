@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Community Connect</title>
+</head>
+<body>
+
+  <div class="bg">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+
+  <!-- ambient drifting particles + slow floating shapes, sits behind everything -->
+  <canvas id="ambient"></canvas>
+
+  <!-- logo, top left, glassmorphic badge -->
+  <div class="logo">
+    <span class="logoGlass">
+      <img src="https://res.cloudinary.com/dgz6qmmuh/image/upload/f_auto,q_auto/v1/assets/wakeupcoders/ug9j3dlkmcfozqfp7mi7" alt="wakeupcoders logo">
+    </span>
+    <span class="logoText">wakeupcoders</span>
+  </div>
+
+  <!-- edit button, reopens the setup modal any time -->
+  <button id="editBtn" title="Edit event details">&#9998; Edit event</button>
+
+  <!-- QR code, bottom right -->
+  <div class="qrBox">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&bgcolor=050810&color=ffffff&data=https://wakeupcoders.example/join" alt="Join QR code">
+    <p>scan to join the community</p>
+  </div>
+
+  <div class="wrap">
+    <p class="eyebrow">COMMUNITY CONNECT &nbsp;&middot;&nbsp; powered by wakeupcoders</p>
+
+    <h1 id="guestName">Set up your event</h1>
+    <p id="eventText">Click "Edit event" or fill the form to get started</p>
+
+    <div class="timer" id="timer" style="display:none">
+      <div class="box"><span id="hh">00</span><small>HRS</small></div>
+      <div class="colon">:</div>
+      <div class="box"><span id="mm">00</span><small>MIN</small></div>
+      <div class="colon">:</div>
+      <div class="box"><span id="ss">00</span><small>SEC</small></div>
+    </div>
+
+    <div class="statusWrap" id="statusWrap" style="display:none">
+      <span class="dot"></span>
+      <p id="statusText">getting things ready...</p>
+    </div>
+  </div>
+
+  <!-- celebration screen once timer hits 0 -->
+  <div class="celebrate" id="celebrate">
+    <p class="eyebrow2">COMMUNITY CONNECT &middot; wakeupcoders</p>
+    <h1>WE'RE LIVE</h1>
+    <p id="liveText">The Future of Human Connection in an AI World</p>
+  </div>
+
+  <canvas id="confetti"></canvas>
+
+  <!-- setup modal, shown on first load or when "Edit event" is clicked -->
+  <div class="modalOverlay" id="modalOverlay">
+    <div class="modalCard">
+      <p class="modalEyebrow">COMMUNITY CONNECT SETUP</p>
+      <h2>Tell us about the event</h2>
+      <p class="modalSub">This gets saved in your browser, so this page works for any event without touching the code.</p>
+
+      <label>Event name</label>
+      <input type="text" id="inputName" placeholder="e.g. Dr. Aanya Kapoor" />
+
+      <label>Topic</label>
+      <input type="text" id="inputTopic" placeholder="e.g. The Future of Human Connection in an AI World" />
+
+      <label>Date &amp; time</label>
+      <input type="datetime-local" id="inputDateTime" />
+
+      <p class="modalError" id="modalError"></p>
+
+      <button id="saveBtn">Save &amp; start countdown</button>
+    </div>
+  </div>
+
+<style>
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    height:100vh;
+    background:#050810;
+    color:#fff;
+    font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    position:relative;
+  }
+
+  /* ---- animated gradient background, Build-style ---- */
+  .bg{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    overflow:hidden;
+  }
+  .blob{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(90px);
+    opacity:0.55;
+  }
+  .b1{
+    width:520px; height:520px;
+    background:#0078D4;
+    top:-150px; left:-100px;
+    animation: float1 14s ease-in-out infinite;
+  }
+  .b2{
+    width:480px; height:480px;
+    background:#8661C5;
+    bottom:-160px; right:-120px;
+    animation: float2 16s ease-in-out infinite;
+  }
+  .b3{
+    width:400px; height:400px;
+    background:#00B7C3;
+    bottom:100px; left:20%;
+    animation: float3 18s ease-in-out infinite;
+  }
+
+  @keyframes float1{
+    0%,100%{ transform:translate(0,0); }
+    50%{ transform:translate(60px, 40px); }
+  }
+  @keyframes float2{
+    0%,100%{ transform:translate(0,0); }
+    50%{ transform:translate(-50px, -30px); }
+  }
+  @keyframes float3{
+    0%,100%{ transform:translate(0,0) scale(1); }
+    50%{ transform:translate(30px, -40px) scale(1.1); }
+  }
+
+  #ambient{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  .wrap{
+    position:relative;
+    z-index:1;
+    text-align:center;
+    padding:20px;
+  }
+
+  .eyebrow{
+    color:#8ec9ff;
+    letter-spacing:2px;
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:14px;
+  }
+
+  h1#guestName{
+    font-size:48px;
+    margin:0 0 8px 0;
+    background:linear-gradient(90deg,#ffffff,#bcd9ff);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+
+  #eventText{
+    color:#b8c2d6;
+    font-size:18px;
+    max-width:620px;
+    margin:0 auto 44px auto;
+  }
+
+  .timer{
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    gap:12px;
+  }
+
+  .box{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(6px);
+    border-radius:12px;
+    padding:16px 20px;
+    min-width:76px;
+  }
+
+  .box span{
+    display:block;
+    font-size:40px;
+    font-weight:600;
+    background:linear-gradient(180deg,#ffffff,#9fd3ff);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+
+  .box small{
+    color:#8ea3c2;
+    font-size:11px;
+    letter-spacing:1px;
+  }
+
+  .colon{
+    font-size:34px;
+    color:#5aa9ff;
+    padding-bottom:16px;
+  }
+
+  .statusWrap{
+    margin-top:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    height:20px;
+    position:relative;
+  }
+
+  .dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#00e08a;
+    box-shadow:0 0 8px #00e08a;
+    animation: blink 1.4s infinite;
+  }
+
+  @keyframes blink{
+    0%,100%{ opacity:1; }
+    50%{ opacity:0.3; }
+  }
+
+  #statusText{
+    margin:0;
+    color:#a9b7cf;
+    font-size:14px;
+    font-style:italic;
+    transition: opacity 0.8s ease;
+  }
+
+  /* ---- celebration screen ---- */
+  .celebrate{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:2;
+    background:linear-gradient(135deg,#0078D4,#8661C5 60%,#00B7C3);
+    color:#fff;
+    text-align:center;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+  }
+
+  .eyebrow2{
+    letter-spacing:2px;
+    font-size:13px;
+    font-weight:600;
+    opacity:0.85;
+    margin-bottom:10px;
+  }
+
+  .celebrate h1{
+    font-size:70px;
+    margin:0 0 12px 0;
+    animation: pop 0.6s ease;
+  }
+
+  .celebrate p{
+    font-size:20px;
+    max-width:600px;
+    opacity:0.95;
+  }
+
+  @keyframes pop{
+    0%{ transform:scale(0.5); opacity:0; }
+    60%{ transform:scale(1.1); opacity:1; }
+    100%{ transform:scale(1); }
+  }
+
+  #confetti{
+    position:fixed;
+    inset:0;
+    z-index:3;
+    pointer-events:none;
+    display:none;
+  }
+
+  .logo{
+    position:fixed;
+    top:22px;
+    left:26px;
+    z-index:4;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  .logoGlass{
+    width:64px;
+    height:64px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:16px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.22);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow:0 4px 18px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+    overflow:hidden;
+  }
+
+  .logoGlass img{
+    width:42px;
+    height:42px;
+    object-fit:contain;
+    display:block;
+  }
+
+  .logoText{
+    font-weight:600;
+    letter-spacing:1px;
+    color:#dbe6f5;
+    font-size:16px;
+  }
+
+  #editBtn{
+    position:fixed;
+    top:22px;
+    right:26px;
+    z-index:4;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.18);
+    color:#dbe6f5;
+    font-size:12px;
+    padding:8px 14px;
+    border-radius:20px;
+    cursor:pointer;
+    backdrop-filter: blur(6px);
+    font-family: inherit;
+  }
+  #editBtn:hover{
+    background:rgba(255,255,255,0.15);
+  }
+
+  .qrBox{
+    position:fixed;
+    bottom:22px;
+    right:26px;
+    z-index:4;
+    text-align:center;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(6px);
+    border-radius:14px;
+    padding:12px 14px 8px 14px;
+  }
+  .qrBox img{
+    width:110px;
+    height:110px;
+    border-radius:8px;
+    display:block;
+  }
+  .qrBox p{
+    margin:6px 0 0 0;
+    font-size:11px;
+    color:#9fb0cc;
+    max-width:110px;
+  }
+
+  /* sparkle particles that burst near the status text, mix of shapes */
+  .spark{
+    position:absolute;
+    pointer-events:none;
+    animation: sparkUp 1.8s ease-out forwards;
+  }
+  .spark.circle{ border-radius:50%; }
+  .spark.ring{ border-radius:50%; background:transparent !important; border:2px solid; }
+  .spark.diamond{ transform:rotate(45deg); }
+
+  @keyframes sparkUp{
+    0%{ transform:translate(0,0) scale(1) rotate(0deg); opacity:1; }
+    100%{ transform:translate(var(--dx), var(--dy)) scale(0.2) rotate(180deg); opacity:0; }
+  }
+
+  /* ---- setup modal ---- */
+  .modalOverlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:10;
+    background:rgba(2,4,10,0.72);
+    backdrop-filter: blur(4px);
+    align-items:center;
+    justify-content:center;
+  }
+
+  .modalCard{
+    width:min(440px, 90vw);
+    background:#0d1220;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:16px;
+    padding:28px 26px 24px 26px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  .modalEyebrow{
+    color:#8ec9ff;
+    letter-spacing:2px;
+    font-size:11px;
+    font-weight:700;
+    margin:0 0 10px 0;
+  }
+
+  .modalCard h2{
+    margin:0 0 6px 0;
+    font-size:22px;
+  }
+
+  .modalSub{
+    color:#93a2bd;
+    font-size:13px;
+    margin:0 0 20px 0;
+    line-height:1.4;
+  }
+
+  .modalCard label{
+    display:block;
+    font-size:12px;
+    color:#b7c2d9;
+    margin:14px 0 6px 0;
+  }
+
+  .modalCard input{
+    width:100%;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.16);
+    background:rgba(255,255,255,0.05);
+    color:#fff;
+    font-size:14px;
+    font-family: inherit;
+  }
+
+  .modalCard input:focus{
+    outline:none;
+    border-color:#5aa9ff;
+  }
+
+  .modalCard input[type="datetime-local"]{
+    color-scheme: dark;
+  }
+
+  .modalError{
+    color:#ff8080;
+    font-size:12px;
+    min-height:16px;
+    margin:10px 0 0 0;
+  }
+
+  #saveBtn{
+    width:100%;
+    margin-top:14px;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(90deg,#0078D4,#8661C5);
+    color:#fff;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    font-family: inherit;
+  }
+  #saveBtn:hover{
+    filter:brightness(1.08);
+  }
+</style>
+
+<script>
+
+  // ---------- storage helpers ----------
+  // saved in localStorage so this same file works for any event without editing code.
+  // note: if you're previewing this inside a sandboxed iframe (like an in-chat preview),
+  // localStorage may not persist between reloads there -- open the downloaded file
+  // directly in a browser tab, or host it, and it will save normally.
+  const STORAGE_KEY = "wakeupcoders_event_config";
+
+  function getConfig(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){
+      return null;
+    }
+  }
+
+  function saveConfig(cfg){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
+    }catch(e){
+      console.warn("Could not save to localStorage:", e);
+    }
+  }
+
+  // ---------- funny rotating lines ----------
+  // 146 lines, shuffled into a queue so nothing repeats until the whole list has played once
+  const statusLines = [
+    "host is eating backstage, don't tell anyone",
+    "guest is stuck in traffic, almost here",
+    "guest just arrived, getting mic'd up",
+    "someone is still fixing the slides at the last minute",
+    "coffee round 3 for the backstage crew",
+    "wakeupcoders team doing a final sound check",
+    "host practicing the opening line one more time",
+    "guest asked if we are live yet, for the 5th time",
+    "someone forgot their laptop charger, chaos backstage",
+    "the community is joining in, room is filling up fast",
+    "host is rehearsing jokes that may or may not land",
+    "guest's car just entered the parking lot",
+    "someone spilled chai on the demo laptop, send help",
+    "mic check, one two, one two, is this thing on",
+    "the wifi password is being passed around backstage",
+    "host googling how to pronounce the guest's name, again",
+    "guest is doing a quick power nap before going live",
+    "someone is ironing their shirt two minutes before showtime",
+    "the intro video is still rendering, please hold",
+    "host's phone battery at 4 percent, panic mode activated",
+    "backstage snack table getting raided as we speak",
+    "the community manager is counting registrations, we broke a record",
+    "guest practicing the can you hear me line",
+    "someone just realized the clicker remote needs new batteries",
+    "host doing breathing exercises before going on stage",
+    "the projector is being convinced to cooperate",
+    "guest's driver took a wrong turn, we forgive them",
+    "backstage crew running on caffeine and pure hope",
+    "someone is quizzing the host on fun facts about the guest",
+    "the moderator is triple checking the Q and A queue",
+    "host just found their notes, false alarm everyone",
+    "guest is adjusting their collar for the fourth time",
+    "someone whispered five minutes and everyone panicked a little",
+    "the volunteers are lining up name tags backstage",
+    "host is doing vocal warmups, sounds a bit odd honestly",
+    "guest's assistant is handing over a printed cheat sheet",
+    "someone just tested the applause sound effect, it worked",
+    "the tech team is refreshing the stream dashboard nervously",
+    "host is quietly rehearsing how to say wakeupcoders fast",
+    "guest is scrolling through slides one final time",
+    "someone brought extra chairs backstage, seems optimistic",
+    "the community chat is already roasting the countdown timer",
+    "host asked if the countdown can just stop at 00:01 forever",
+    "guest is practicing a confident walk to the stage",
+    "someone taped down a loose cable, safety first",
+    "backstage playlist just switched to something more upbeat",
+    "the host's family joined the stream to cheer them on",
+    "guest double checking their pronunciation of technical terms",
+    "someone is fanning the host, stage lights are no joke",
+    "the run of show sheet just got updated for the third time",
+    "host practicing a dramatic pause before the big reveal",
+    "guest is sipping water very carefully near the mic",
+    "someone just found the missing HDMI cable, crisis averted",
+    "the countdown timer is somehow the most anxious one here",
+    "host and guest exchanging a quick backstage handshake",
+    "someone's phone rang backstage at the worst possible moment",
+    "the green room snacks are mysteriously disappearing",
+    "host is reviewing the audience questions one last time",
+    "guest just got a good luck message from the whole team",
+    "someone's laptop update decided now was a great time",
+    "the community is placing bets on how the intro will go",
+    "host practicing the exact wave for the camera",
+    "guest's badge is on upside down, no one has told them yet",
+    "someone is testing the confetti button just in case",
+    "the backstage clock is somehow ten minutes fast",
+    "host is memorizing the guest's job title correctly this time",
+    "guest asked for the wifi password again, still the same one",
+    "someone just cued the walk on music, fingers crossed",
+    "the volunteers are doing a final headcount backstage",
+    "host is practicing not saying um too many times",
+    "guest is reviewing their opening line in the mirror",
+    "someone just realized the clock on stage is wrong",
+    "the community moderators are prepping the welcome message",
+    "host taking one last sip of water before the mic goes live",
+    "guest's notes just got reorganized for the third time",
+    "someone backstage is doing a countdown of their own, unofficially",
+    "the AV team gave a thumbs up, we think that's a good sign",
+    "host is quietly hyping themselves up in the mirror",
+    "guest just waved at the backstage camera, hello guest",
+    "someone brought balloons, nobody knows why but we love it",
+    "the tech rehearsal audio is somehow still playing softly",
+    "host reviewing the exact spelling of the guest's name",
+    "guest's laptop is updating slides one final time",
+    "someone just discovered an extra battery pack, saved the day",
+    "the backstage energy just hit an all time high",
+    "host doing a last minute shoulder stretch before stage time",
+    "guest confirming the clicker actually advances the slides",
+    "someone is holding cue cards nobody asked for but they insist",
+    "the community count just crossed a fun little milestone",
+    "host practicing eye contact with an imaginary audience",
+    "guest quietly reviewing three ways to say thank you for having me",
+    "someone just adjusted the stage lights, much better now",
+    "the run sheet says walk out confidently, easier said than done",
+    "host is double checking their collar, standard procedure",
+    "guest's phone is on silent, we hope, we really hope",
+    "someone backstage just cracked a joke, the room needed that",
+    "the moderator is refreshing the chat, it's getting lively",
+    "host taking a deep breath before the biggest smile yet",
+    "guest is holding their coffee like a trophy",
+    "someone just found the extra mic stand, crisis two averted",
+    "the community banner just got hung up straight, finally",
+    "host practicing the transition into the guest's introduction",
+    "guest doing one last mic level check, sounding crisp",
+    "someone backstage started a countdown chant, we're into it",
+    "the stage manager gave the two minute signal",
+    "host is silently rehearsing the closing line too, just in case",
+    "guest adjusting their badge, still upside down, still unnoticed",
+    "someone just topped up the water glasses on stage",
+    "the volunteers are forming a small cheer squad backstage",
+    "host doing one final read through of the agenda",
+    "guest's assistant gave a subtle thumbs up from the wings",
+    "someone whispered it's showtime and the whole room lit up",
+    "the stream preview just looked absolutely perfect",
+    "host straightening their posture, showtime mode fully activated",
+    "guest taking their mark on the stage floor tape",
+    "someone backstage is holding their breath a little, we get it",
+    "the community chat just hit triple digit messages",
+    "host is smiling at absolutely nothing, pure excitement",
+    "guest giving a small nod, ready when you are",
+    "someone just dimmed the house lights, here we go",
+    "the countdown is almost done and honestly so are our nerves",
+    "host's mic pack just got clipped on securely",
+    "guest is standing just behind the curtain, ready to walk out",
+    "someone backstage started a slow clap, spirits are high",
+    "the stage lights just shifted to full brightness",
+    "host giving the crew a quiet thank you nod",
+    "guest is taking one last deep breath before stepping out",
+    "someone whispered good luck out there backstage",
+    "the whole crew is watching the monitor, holding their breath",
+    "host is ready, guest is ready, the room is ready",
+    "someone just pressed the go live button, no turning back now",
+    "the countdown is basically a formality at this point",
+    "host and guest sharing one last quick smile before the walk out",
+    "the backstage countdown chant just got louder",
+    "someone backstage whispered this is it and everyone nodded",
+    "the whole community is refreshing their screens right about now",
+    "guest just asked where the stage left is, someone points vaguely",
+    "host doing one final teeth check in a tiny backstage mirror",
+    "someone is holding up cue cards that say relax",
+    "the wifi router light just turned solid green, small victories",
+    "guest's shoes are squeaking a little, hope no one notices",
+    "backstage crew doing a silent countdown with their fingers",
+    "host just muted a notification that buzzed at the worst time",
+    "the sponsor banner just got repositioned for better lighting",
+    "guest practicing a firm handshake for absolutely no reason",
+    "someone backstage just yawned loudly, long day for everyone"
+  ];
+
+  // shuffle bag: play through a fully shuffled list, reshuffle only once it's exhausted
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  let statusQueue = shuffle(statusLines);
+  let queuePos = 0;
+  function nextStatusLine(){
+    if(queuePos >= statusQueue.length){
+      statusQueue = shuffle(statusLines);
+      queuePos = 0;
+    }
+    return statusQueue[queuePos++];
+  }
+
+  // ---------- element refs ----------
+  const timerBox = document.getElementById("timer");
+  const statusWrap = document.getElementById("statusWrap");
+  const statusText = document.getElementById("statusText");
+  const celebrate = document.getElementById("celebrate");
+  const confettiCanvas = document.getElementById("confetti");
+  const modalOverlay = document.getElementById("modalOverlay");
+  const editBtn = document.getElementById("editBtn");
+  const inputName = document.getElementById("inputName");
+  const inputTopic = document.getElementById("inputTopic");
+  const inputDateTime = document.getElementById("inputDateTime");
+  const modalError = document.getElementById("modalError");
+  const saveBtn = document.getElementById("saveBtn");
+
+  function pad(n){ return n < 10 ? "0"+n : n; }
+
+  let eventDate = null;
+  let countdownTimer = null;
+  let statusTimer = null;
+
+  // formats a Date object into the value datetime-local inputs expect
+  function toLocalInputValue(date){
+    const off = date.getTimezoneOffset();
+    const local = new Date(date.getTime() - off*60000);
+    return local.toISOString().slice(0,16);
+  }
+
+  function applyConfig(cfg){
+    document.getElementById("guestName").innerText = cfg.name;
+    document.getElementById("eventText").innerText = cfg.topic;
+    document.getElementById("liveText").innerText = cfg.topic;
+    eventDate = new Date(cfg.datetime);
+
+    // reset views in case we're re-running after a previous event already went live
+    celebrate.style.display = "none";
+    confettiCanvas.style.display = "none";
+    timerBox.style.display = "flex";
+    statusWrap.style.display = "flex";
+
+    startCountdown();
+  }
+
+  function startCountdown(){
+    clearInterval(countdownTimer);
+    clearInterval(statusTimer);
+
+    statusText.innerText = nextStatusLine();
+    statusTimer = setInterval(() => {
+      statusText.style.opacity = 0;
+      setTimeout(() => {
+        statusText.innerText = nextStatusLine();
+        statusText.style.opacity = 1;
+        sparkBurst(statusWrap);
+      }, 800);
+    }, 7000); // <- change this number (in ms) to speed up / slow down the text rotation
+
+    countdownTimer = setInterval(() => {
+      const now = new Date().getTime();
+      const dist = eventDate.getTime() - now;
+
+      if(dist <= 0){
+        clearInterval(countdownTimer);
+        clearInterval(statusTimer);
+        timerBox.style.display = "none";
+        statusWrap.style.display = "none";
+        celebrate.style.display = "flex";
+        launchConfetti();
+        return;
+      }
+
+      const hh = Math.floor(dist / (1000*60*60));
+      const mm = Math.floor((dist % (1000*60*60)) / (1000*60));
+      const ss = Math.floor((dist % (1000*60)) / 1000);
+
+      document.getElementById("hh").innerText = pad(hh);
+      document.getElementById("mm").innerText = pad(mm);
+      document.getElementById("ss").innerText = pad(ss);
+
+    }, 1000);
+  }
+
+  // ---------- modal open/close/save ----------
+  function openModal(prefill){
+    if(prefill){
+      inputName.value = prefill.name || "";
+      inputTopic.value = prefill.topic || "";
+      inputDateTime.value = prefill.datetime ? toLocalInputValue(new Date(prefill.datetime)) : "";
+    } else {
+      // sensible default: one hour from now, so the form isn't empty on first run
+      const soon = new Date(Date.now() + 60*60*1000);
+      inputDateTime.value = toLocalInputValue(soon);
+    }
+    modalError.innerText = "";
+    modalOverlay.style.display = "flex";
+  }
+
+  function closeModal(){
+    modalOverlay.style.display = "none";
+  }
+
+  saveBtn.addEventListener("click", () => {
+    const name = inputName.value.trim();
+    const topic = inputTopic.value.trim();
+    const datetime = inputDateTime.value;
+
+    if(!name || !topic || !datetime){
+      modalError.innerText = "Please fill in all three fields.";
+      return;
+    }
+
+    const chosen = new Date(datetime);
+    if(chosen.getTime() <= Date.now()){
+      modalError.innerText = "Pick a date and time in the future.";
+      return;
+    }
+
+    const cfg = { name, topic, datetime };
+    saveConfig(cfg);
+    closeModal();
+    applyConfig(cfg);
+  });
+
+  editBtn.addEventListener("click", () => {
+    openModal(getConfig());
+  });
+
+  // ---------- on load: use saved config, or ask for one ----------
+  const existingConfig = getConfig();
+  if(existingConfig){
+    applyConfig(existingConfig);
+  } else {
+    openModal(null);
+  }
+
+  // little sparkle burst near the status text every time it changes, mixed shapes
+  function sparkBurst(container){
+    const rect = container.getBoundingClientRect();
+    const colors = ["#5aa9ff", "#c3a6ff", "#5fe3d3", "#ffd166", "#ffffff"];
+    const shapes = ["circle", "ring", "diamond"];
+    for(let i=0; i<14; i++){
+      const s = document.createElement("span");
+      const shape = shapes[Math.floor(Math.random()*shapes.length)];
+      s.className = "spark " + shape;
+      const size = Math.random()*5 + 3;
+      s.style.width = size+"px";
+      s.style.height = size+"px";
+      const color = colors[Math.floor(Math.random()*colors.length)];
+      if(shape === "ring"){ s.style.borderColor = color; }
+      else{ s.style.background = color; }
+      s.style.left = (rect.left + rect.width/2 + (Math.random()*100-50)) + "px";
+      s.style.top = (rect.top + rect.height/2) + "px";
+      const dx = (Math.random()*120-60) + "px";
+      const dy = (Math.random()*-90-15) + "px";
+      s.style.setProperty("--dx", dx);
+      s.style.setProperty("--dy", dy);
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 1900);
+    }
+  }
+
+  // ------- ambient background: drifting twinkling dots + slow rotating outline shapes -------
+  (function ambientParticles(){
+    const canvas = document.getElementById("ambient");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const dots = [];
+    for(let i=0; i<70; i++){
+      dots.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.6 + 0.4,
+        vy: Math.random() * 0.15 + 0.03,
+        vx: (Math.random() - 0.5) * 0.1,
+        twinkle: Math.random() * Math.PI * 2
+      });
+    }
+
+    const shapes = [];
+    const shapeTypes = ["circle", "triangle", "square"];
+    for(let i=0; i<8; i++){
+      shapes.push({
+        type: shapeTypes[Math.floor(Math.random()*shapeTypes.length)],
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 30 + 20,
+        angle: Math.random() * Math.PI * 2,
+        spin: (Math.random() - 0.5) * 0.002,
+        vy: (Math.random() - 0.5) * 0.08,
+        vx: (Math.random() - 0.5) * 0.08,
+        hue: [ "rgba(90,169,255,0.18)", "rgba(195,166,255,0.18)", "rgba(95,227,211,0.16)" ][i % 3]
+      });
+    }
+
+    function drawShape(s){
+      ctx.save();
+      ctx.translate(s.x, s.y);
+      ctx.rotate(s.angle);
+      ctx.strokeStyle = s.hue;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      if(s.type === "circle"){
+        ctx.arc(0, 0, s.size/2, 0, Math.PI*2);
+      } else if(s.type === "square"){
+        ctx.rect(-s.size/2, -s.size/2, s.size, s.size);
+      } else {
+        const h = s.size * 0.9;
+        ctx.moveTo(0, -h/2);
+        ctx.lineTo(h/2, h/2);
+        ctx.lineTo(-h/2, h/2);
+        ctx.closePath();
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function draw(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+
+      shapes.forEach(s => {
+        s.angle += s.spin;
+        s.x += s.vx;
+        s.y += s.vy;
+        if(s.x < -60) s.x = canvas.width + 60;
+        if(s.x > canvas.width + 60) s.x = -60;
+        if(s.y < -60) s.y = canvas.height + 60;
+        if(s.y > canvas.height + 60) s.y = -60;
+        drawShape(s);
+      });
+
+      dots.forEach(d => {
+        d.twinkle += 0.02;
+        const alpha = 0.25 + Math.sin(d.twinkle) * 0.2;
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(180, 210, 255, ${alpha})`;
+        ctx.fill();
+
+        d.y -= d.vy;
+        d.x += d.vx;
+        if(d.y < -5){ d.y = canvas.height + 5; d.x = Math.random()*canvas.width; }
+      });
+
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  })();
+
+  // ------- confetti celebration -------
+  function launchConfetti(){
+    confettiCanvas.style.display = "block";
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+    const ctx = confettiCanvas.getContext("2d");
+
+    const colors = ["#ffffff", "#5aa9ff", "#c3a6ff", "#5fe3d3", "#ffd166"];
+    let pieces = [];
+
+    for(let i=0; i<160; i++){
+      pieces.push({
+        x: Math.random() * confettiCanvas.width,
+        y: Math.random() * confettiCanvas.height * -1,
+        size: Math.random() * 8 + 4,
+        speed: Math.random() * 3 + 2,
+        drift: Math.random() * 2 - 1,
+        color: colors[Math.floor(Math.random()*colors.length)],
+        tilt: Math.random() * 360
+      });
+    }
+
+    function draw(){
+      ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+      pieces.forEach(p => {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.tilt * Math.PI/180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.6);
+        ctx.restore();
+
+        p.y += p.speed;
+        p.x += p.drift;
+        p.tilt += 4;
+
+        if(p.y > confettiCanvas.height){
+          p.y = -10;
+          p.x = Math.random() * confettiCanvas.width;
+        }
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    window.addEventListener("resize", () => {
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    });
+  }
+
+</script>
+
+</body>
+</html>
